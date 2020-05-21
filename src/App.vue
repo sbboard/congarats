@@ -3,9 +3,11 @@
     <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
     <h1>congarats</h1>
     <div id="playspace">
-      <div class="player" v-for="player in playerX" :key="player.num" :style="{ top: player.y + 'px', left: player.x + 'px' }">
+      <div class="player" v-for="player in playerX" 
+      :key="player.num" 
+      :style="{ top: player.y + 'px', left: player.x + 'px' }">
         <img class="char" src="./assets/temp/avatar.png"/>
-        <img class="shadow" src="./assets/temp/avatar.png"/>
+        <img class="shadow" src="./assets/temp/avatar.png" :style="{ transform: calcShadow(player.x) }"/>
       </div>
     </div>
     <img id="floorL" src="./assets/temp/left.png"/>
@@ -32,15 +34,29 @@ export default {
     }
   },
   methods: {
-    calcShadow(player){
-      //player is randomly placed
-      console.log(player)
-    },
-    placePlayers(){
-      for(let i = 0; i <= this.playerX.length;i++){
-        console.log('ok')
+    calcShadow(x){
+      console.log(x)
+      //let trueCenter = this.screenWidth / 2
+      let outerZoneL = (this.screenWidth - this.sunWidth) / 2
+      let outerZoneR = outerZoneL + this.sunWidth
+      let drift
+      if(x < outerZoneL){
+        console.log('l')
+        drift = -10
       }
-    }
+      else if(x > outerZoneR){
+        drift = 10
+      }
+      else{
+        let placeOnSun = x - outerZoneL
+        let percentComplete = placeOnSun / this.sunWidth
+        //shifts drift from 0 to 1 scale to -10 to 10 scale
+        drift = ((percentComplete * 2) - 1) * 10
+      }
+      // 0, 0 is center
+      //10 far right, -10 far left
+      return `rotate3d(10, ${drift}, ${drift}, -56deg) rotate(180deg)`
+    },
   },
   mounted(){
     this.screenWidth = document.body.clientWidth;
@@ -56,10 +72,6 @@ export default {
       this.playerX[i].x = X
       this.playerX[i].y = Y
     }
-    console.log(this.playerX)
-    //place player
-    //this.placePlayers()
-    //this.calcShadow(0)
   }
 }
 </script>
@@ -96,7 +108,6 @@ export default {
       .shadow
         position: absolute
         top: 0
-        transform: rotate3d(10, -4, -6, -56deg) rotate(180deg)
         opacity: 0.45
         -webkit-filter: brightness(0) blur(3px)
         filter: brightness(0) blur(3px)
