@@ -3,7 +3,7 @@
     <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
     <h1>congarats</h1>
     <div id="playspace">
-      <div class="player">
+      <div class="player" v-for="player in playerX" :key="player.num" :style="{ top: player.y + 'px', left: player.x + 'px' }">
         <img class="char" src="./assets/temp/avatar.png"/>
         <img class="shadow" src="./assets/temp/avatar.png"/>
       </div>
@@ -11,7 +11,7 @@
     <img id="floorL" src="./assets/temp/left.png"/>
     <img id="floor" src="./assets/temp/floor.png"/>
     <img id="floorR" src="./assets/temp/right.png"/>
-    <img id="head"  src="./assets/temp/head.png"/>
+    <img id="head" ref="sun" src="./assets/temp/head.png"/>
     <img id="sky" src="./assets/temp/sky.png"/>
   </div>
 </template>
@@ -26,16 +26,40 @@ export default {
   },
   data(){
     return {
-      playerX: [0,0,0,0,0]
+      playerX: [{'num':0,'x':0,'y':0},{'num':0,'x':0,'y':0},{'num':0,'x':0,'y':0}],
+      sunWidth: 0,
+      screenWidth: 0,
     }
   },
   methods: {
-    calcShadow(player,xcord){
-      console.log(player + xcord)
+    calcShadow(player){
+      //player is randomly placed
+      console.log(player)
+    },
+    placePlayers(){
+      for(let i = 0; i <= this.playerX.length;i++){
+        console.log('ok')
+      }
     }
   },
   mounted(){
-    console.log('ok')
+    this.screenWidth = document.body.clientWidth;
+    if(this.screenWidth < 592){
+      this.sunWidth = this.screenWidth
+    }
+    else{
+      this.sunWidth = 592
+    }
+    for(let i =0;i<this.playerX.length;i++){
+      let X = Math.floor(Math.random() * this.screenWidth);
+      let Y = Math.floor(Math.random() * 100);
+      this.playerX[i].x = X
+      this.playerX[i].y = Y
+    }
+    console.log(this.playerX)
+    //place player
+    //this.placePlayers()
+    //this.calcShadow(0)
   }
 }
 </script>
@@ -65,8 +89,6 @@ export default {
     bottom: 0
     z-index: 5
     .player
-      top: 0
-      left: 41em
       position: absolute
       img
         width: 5em
