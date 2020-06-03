@@ -5,7 +5,7 @@
     <div id="playspace">
       <div class="player" v-for="player in playerX" 
       :key="player.num" 
-      :style="{ top: player.y + 'px', left: player.x + 'px' }">
+      :style="guyPlacing(player.source,player.x,player.y)">
         <img class="char" src="./assets/temp/avatar.png"/>
         <img class="shadow" src="./assets/temp/avatar.png" :style="{ transform: 'rotate3d(10,'+player.shadow+','+player.shadow+',-56deg) rotate(180deg)' }"/>
       </div>
@@ -28,7 +28,7 @@ export default {
   },
   data(){
     return {
-      playerX: [{'num':0,'x':0,'y':0,'shadow':10},{'num':1,'x':0,'y':0,'shadow':10},{'num':2,'x':0,'y':0,'shadow':10}],
+      playerX: [{'num':0,'x':0,'y':0,'source':'left','shadow':10},{'num':1,'x':0,'source':'left','y':0,'shadow':10},{'num':2,'x':0,'source':'left','y':0,'shadow':10}],
       sunWidth: 0,
       screenWidth: 0,
     }
@@ -57,7 +57,12 @@ export default {
     },
     resize(){
       console.log("ok")
+    },
+    guyPlacing(side,x,y){
+      return `${side}:${x}px; top:${y}px;`
     }
+  },
+  computed: {
   },
   mounted(){
     //place little guys
@@ -69,11 +74,15 @@ export default {
       this.sunWidth = 592
     }
     for(let i =0;i<this.playerX.length;i++){
-      let X = Math.floor(Math.random() * this.screenWidth);
+      this.playerX[i].source = (i%2==0) ? "left" : "right"
+      //x coord generated
+      let X = Math.floor(Math.random() * (this.screenWidth / 2));
+      //y coord generated
       let Y = Math.floor(Math.random() * 100);
       this.playerX[i].x = X
       this.playerX[i].y = Y
     }
+
     //initiate resize listener
     this.resize()
     window.addEventListener('resize', this.resize)
