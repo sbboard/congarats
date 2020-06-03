@@ -7,7 +7,7 @@
       :key="player.num" 
       :style="{ top: player.y + 'px', left: player.x + 'px' }">
         <img class="char" src="./assets/temp/avatar.png"/>
-        <img class="shadow" src="./assets/temp/avatar.png" :style="{ transform: calcShadow(player.x) }"/>
+        <img class="shadow" src="./assets/temp/avatar.png" :style="{ transform: 'rotate3d(10,'+player.shadow+','+player.shadow+',-56deg) rotate(180deg)' }"/>
       </div>
     </div>
     <img id="floorL" src="./assets/temp/left.png"/>
@@ -28,20 +28,18 @@ export default {
   },
   data(){
     return {
-      playerX: [{'num':0,'x':0,'y':0},{'num':0,'x':0,'y':0},{'num':0,'x':0,'y':0}],
+      playerX: [{'num':0,'x':0,'y':0,'shadow':10},{'num':1,'x':0,'y':0,'shadow':10},{'num':2,'x':0,'y':0,'shadow':10}],
       sunWidth: 0,
       screenWidth: 0,
     }
   },
   methods: {
     calcShadow(x){
-      console.log(x)
       //let trueCenter = this.screenWidth / 2
       let outerZoneL = (this.screenWidth - this.sunWidth) / 2
       let outerZoneR = outerZoneL + this.sunWidth
       let drift
       if(x < outerZoneL){
-        console.log('l')
         drift = -10
       }
       else if(x > outerZoneR){
@@ -57,8 +55,12 @@ export default {
       //10 far right, -10 far left
       return `rotate3d(10, ${drift}, ${drift}, -56deg) rotate(180deg)`
     },
+    resize(){
+      console.log("ok")
+    }
   },
   mounted(){
+    //place little guys
     this.screenWidth = document.body.clientWidth;
     if(this.screenWidth < 592){
       this.sunWidth = this.screenWidth
@@ -72,6 +74,9 @@ export default {
       this.playerX[i].x = X
       this.playerX[i].y = Y
     }
+    //initiate resize listener
+    this.resize()
+    window.addEventListener('resize', this.resize)
   }
 }
 </script>
