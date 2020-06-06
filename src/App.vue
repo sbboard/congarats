@@ -34,26 +34,22 @@ export default {
     }
   },
   methods: {
-    calcShadow(x){
+    calcShadow(index,xCord,source){
       //let trueCenter = this.screenWidth / 2
-      let outerZoneL = (this.screenWidth - this.sunWidth) / 2
-      let outerZoneR = outerZoneL + this.sunWidth
+      let outerZone = (this.screenWidth - this.sunWidth) / 2
       let drift
-      if(x < outerZoneL){
-        drift = -10
-      }
-      else if(x > outerZoneR){
-        drift = 10
+      if(xCord < outerZone){
+        drift = (source == "right") ? 10 : -10
       }
       else{
-        let placeOnSun = x - outerZoneL
+        let placeOnSun = xCord - outerZone
         let percentComplete = placeOnSun / this.sunWidth
         //shifts drift from 0 to 1 scale to -10 to 10 scale
-        drift = ((percentComplete * 2) - 1) * 10
+        drift = (source == "left") ? ((percentComplete * 2) - 1) * 10 : ((((percentComplete) * 2) - 1) * 10) * -1
       }
       // 0, 0 is center
       //10 far right, -10 far left
-      return `rotate3d(10, ${drift}, ${drift}, -56deg) rotate(180deg)`
+      this.playerX[index].shadow = drift
     },
     resize(){
       console.log("ok")
@@ -61,8 +57,6 @@ export default {
     guyPlacing(side,x,y,z){
       return `${side}:${x}px; top:${y}px; z-index:${z};`
     }
-  },
-  computed: {
   },
   mounted(){
     //get surroundings
@@ -76,6 +70,8 @@ export default {
       this.playerX[i].x = (this.playerX[i].source == 'left') ? Math.floor(Math.random() * (this.screenWidth / 2)) : (Math.floor(Math.random() * (this.screenWidth / 2)))+80
       //y coord generated
       this.playerX[i].y = Math.floor(Math.random() * 100);
+      //calc shadow
+      this.calcShadow(i,this.playerX[i].x,this.playerX[i].source)
     }
     this.playerX.sort((a, b) => parseFloat(a.y) - parseFloat(b.y));
 
