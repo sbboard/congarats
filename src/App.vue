@@ -108,6 +108,7 @@ export default {
     z-index: 5
     .player
       position: absolute
+      transition: left 5s, right 5s
       img
         width: 5em
         position: absolute
@@ -119,6 +120,7 @@ export default {
         filter: brightness(0) blur(3px)
         transform-origin: bottom
         pointer-events: none
+        transition: transform 5s
   #sky
     position: absolute
     top: 0
