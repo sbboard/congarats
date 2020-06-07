@@ -28,7 +28,10 @@ export default {
   },
   data(){
     return {
-      playerX: [{'num':0,'x':0,'y':0,'source':'left','shadow':10},{'num':1,'x':0,'source':'left','y':0,'shadow':10},{'num':2,'x':0,'source':'left','y':0,'shadow':10}],
+      playerX: [
+        {'num':0,'x':0,'source':'left','y':0,'shadow':10,'moving':false,'goal':0},
+        {'num':1,'x':0,'source':'left','y':0,'shadow':10,'moving':false,'goal':0},
+        {'num':2,'x':0,'source':'left','y':0,'shadow':10,'moving':false,'goal':0}],
       sunWidth: 0,
       screenWidth: 0,
     }
@@ -50,6 +53,28 @@ export default {
       // 0, 0 is center
       //10 far right, -10 far left
       this.playerX[index].shadow = drift
+    },
+    move(){
+      //command phase
+      //rolls every second.
+      let dice = Math.floor(Math.random() * 4) + 1
+      // 25% says a guy moves
+      if(dice == 1){
+        //roll which one moves
+        let characterChoice = Math.floor(Math.random() * this.playerX.length)
+        //check if it's active, if it is, ignore
+        if(this.playerX[characterChoice].moving == false){
+          this.playerX[characterChoice].goal = Math.floor(Math.random() * 100) + 1
+          this.playerX[characterChoice].moving = true
+        }
+      }
+
+      //move phase
+      for(let i=0;i<this.playerX.length;i++){
+        if(this.playerX[i].moving == true){
+          this.playerX[i].x = (Math.abs(this.playerX[i].x - this.playerX[i].goal) >= 10) ? this.playerX[i].x + 10 :  this.playerX[i].x + Math.abs(this.playerX[i].x - this.playerX[i].goal)
+        }
+      }
     },
     resize(){
       console.log("ok")
@@ -78,6 +103,9 @@ export default {
     //initiate resize listener
     this.resize()
     window.addEventListener('resize', this.resize)
+
+    //establish move
+    setInterval(this.move,1000);
   }
 }
 </script>
@@ -108,7 +136,7 @@ export default {
     z-index: 5
     .player
       position: absolute
-      transition: left 5s, right 5s
+      transition: left 1s, right 1s
       img
         width: 5em
         position: absolute
@@ -120,7 +148,7 @@ export default {
         filter: brightness(0) blur(3px)
         transform-origin: bottom
         pointer-events: none
-        transition: transform 5s
+        transition: transform 1s
   #sky
     position: absolute
     top: 0
