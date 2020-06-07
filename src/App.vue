@@ -68,12 +68,12 @@ export default {
           this.playerX[characterChoice].moving = true
         }
       }
-
       //move phase
       for(let i=0;i<this.playerX.length;i++){
         if(this.playerX[i].moving == true){
           this.playerX[i].x = (Math.abs(this.playerX[i].x - this.playerX[i].goal) >= 10) ? this.playerX[i].x + 10 :  this.playerX[i].x + Math.abs(this.playerX[i].x - this.playerX[i].goal)
         }
+        if(this.playerX[i].x >= this.playerX[i].goal){this.playerX[i].moving = false}
       }
     },
     resize(){
